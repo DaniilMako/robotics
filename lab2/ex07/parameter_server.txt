@@ -1,0 +1,19 @@
+/mak_turtle:
+  background_b
+  background_g
+  background_r
+  qos_overrides./parameter_events.publisher.depth
+  qos_overrides./parameter_events.publisher.durability
+  qos_overrides./parameter_events.publisher.history
+  qos_overrides./parameter_events.publisher.reliability
+  use_sim_time
+/rqt_gui_py_node_2479:
+  use_sim_time
+/teleop_turtle:
+  qos_overrides./parameter_events.publisher.depth
+  qos_overrides./parameter_events.publisher.durability
+  qos_overrides./parameter_events.publisher.history
+  qos_overrides./parameter_events.publisher.reliability
+  scale_angular
+  scale_linear
+  use_sim_time
