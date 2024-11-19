@@ -1,0 +1,250 @@
+<?xml version="1.0" ?>
+<robot name='robot' xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Подключение файла конфигурации для взаимодействия с симулятором Gazebo -->
+    <xacro:include filename="$(find robot_description)/urdf/gazebo.urdf.xacro" />
+    <!-- Дополнительные файлы, например, для описания лидара или камеры, могут быть подключены здесь -->
+    <!--xacro:include filename="$(find robot_description)/urdf/lidar.urdf.xacro" /-->
+    <!--xacro:include filename="$(find robot_description)/urdf/depth.urdf.xacro" /-->
+
+    <!-- Определение свойств шасси и колес для использования в модели -->
+    <xacro:property name="chassis_length" value="0.435"/> <!-- Длина шасси -->
+    <xacro:property name="chassis_width" value="0.355"/> <!-- Ширина шасси -->
+    <xacro:property name="chassis_height" value="0.335"/> <!-- Высота шасси -->
+    <xacro:property name="wheel_radius" value="0.066"/> <!-- Радиус колес -->
+    <xacro:property name="wheel_thickness" value="0.052"/> <!-- Толщина колес -->
+    <xacro:property name="wheel_mass" value="0.05"/> <!-- Масса колес -->
+    
+    <xacro:property name="wheel_offset_x" value="0.335"/> <!-- Смещение колес по оси X -->
+    <xacro:property name="wheel_offset_y" value="0.2"/> <!-- Смещение колес по оси Y -->
+    <xacro:property name="wheel_offset_z" value="0.01"/> <!-- Смещение колес по оси Z -->
+    
+    <xacro:property name="back_wheel_offset_x" value="-0.235"/> <!-- Смещение колес по оси X -->
+    <xacro:property name="back_wheel_offset_y" value="0.2"/> <!-- Смещение колес по оси Y -->
+    <xacro:property name="back_wheel_offset_z" value="0.01"/> <!-- Смещение колес по оси Z -->
+
+    <xacro:property name="mass" value="1.0"/> <!-- Масса шасси -->
+
+    <!-- Определение материалов для визуализации -->
+    <material name="white">
+        <color rgba="1 1 1 1" /> <!-- Белый цвет -->
+    </material>
+
+    <material name="orange">
+        <color rgba="1 0.3 0.1 1"/> <!-- Оранжевый цвет -->
+    </material>
+
+    <material name="blue">
+        <color rgba="0.2 0.2 1 1"/> <!-- Синий цвет -->
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/> <!-- Черный цвет -->
+    </material>
+
+    <material name="red">
+        <color rgba="1 0 0 1"/> <!-- Красный цвет -->
+    </material>
+
+    <material name="light_brown">
+        <color rgba="0.8 0.52 0.25 1"/> <!-- Светло-коричневый цвет -->
+    </material>
+
+
+    <!-- Описание базового звена -->
+    <link name="base_link">
+    </link>
+
+    <!-- Определение фиктивного звена base_footprint -->
+    <link name="base_footprint">
+    </link>
+
+    <!-- Фиксированное соединение между base_link и base_footprint -->
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 -0.138" rpy="0 0 0"/> <!-- Смещение по оси Z -->
+    </joint>
+
+    <!-- Фиксированное соединение между base_link и шасси -->
+    <joint name="chassis_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis"/>
+        <origin xyz="${-wheel_offset_x} 0 ${-wheel_offset_z}"/> <!-- Смещение по осям X и Z -->
+    </joint>
+
+    <!-- Описание шасси -->
+    <link name='chassis'>
+        <inertial>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}" rpy="0 0 0"/> <!-- Центр масс -->
+            <mass value="${mass}" /> <!-- Масса -->
+            <inertia ixx="${(1/12) * mass * (chassis_width*chassis_width+chassis_height*chassis_height)}" ixy="0.0" ixz="0.0"
+                     iyy="${(1/12) * mass * (chassis_length*chassis_length+chassis_height*chassis_height)}" iyz="0.0"
+                     izz="${(1/12) * mass * (chassis_length*chassis_length+chassis_width*chassis_width)}" /> <!-- Момент инерции -->
+        </inertial>
+        <visual>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/> <!-- Смещение для визуализации -->
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/> <!-- Форма шасси -->
+            </geometry>
+            <material name="light_brown"/> <!-- Материал для визуализации -->
+        </visual>
+        <collision>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/> <!-- Смещение для столкновений -->
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/> <!-- Геометрия для столкновений -->
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Настройки для симуляции шасси в Gazebo -->
+    <gazebo reference="chassis">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+
+    <!-- Описание соединения для левого колеса -->
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="left_wheel"/>
+        <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" /> <!-- Смещение и ориентация -->
+        <axis xyz="0 0 1"/> <!-- Ось вращения -->
+    </joint>
+
+    <!-- Описание левого колеса -->
+    <link name="left_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/> <!-- Геометрия для визуализации колеса в форме цилиндра -->
+            </geometry>
+            <material name="black"/> <!-- Материал для визуализации -->
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/> <!-- Геометрия для обнаружения столкновений, в данном случае сфера -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Центр масс колеса -->
+            <mass value="${wheel_mass}" /> <!-- Масса колеса -->
+            <inertia ixx="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" ixy="0.0" ixz="0.0"
+                     iyy="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" iyz="0.0"
+                     izz="${(1/2) * wheel_mass * (wheel_radius*wheel_radius)}" /> <!-- Моменты инерции -->
+        </inertial>
+    </link>
+
+    <!-- Настройки для визуализации левого колеса в Gazebo -->
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <!-- Описание соединения для правого колеса -->
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="base_link"/> <!-- Родительское звено -->
+        <child link="right_wheel"/> <!-- Дочернее звено -->
+        <origin xyz="0 ${-wheel_offset_y} 0" rpy="${pi/2} 0 0" /> <!-- Смещение и ориентация -->
+        <axis xyz="0 0 -1"/> <!-- Ось вращения колеса -->
+    </joint>
+
+    <!-- Описание правого колеса -->
+    <link name="right_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/> <!-- Геометрия колеса в форме цилиндра -->
+            </geometry>
+            <material name="black"/> <!-- Материал для визуализации -->
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/> <!-- Геометрия столкновений, сфера -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Центр масс колеса -->
+            <mass value="${wheel_mass}" /> <!-- Масса колеса -->
+            <inertia ixx="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" ixy="0.0" ixz="0.0"
+                     iyy="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" iyz="0.0"
+                     izz="${(1/2) * wheel_mass * (wheel_radius*wheel_radius)}" /> <!-- Моменты инерции -->
+        </inertial>
+    </link>
+
+    <!-- Настройки для визуализации правого колеса в Gazebo -->
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+
+    
+        <!-- Описание соединения для заднего левого колеса -->
+    <joint name="back_left_wheel_joint" type="continuous">
+        <parent link="base_link"/> <!-- Родительское звено -->
+        <child link="back_left_wheel"/> <!-- Дочернее звено -->
+        <origin xyz="${back_wheel_offset_x} ${wheel_offset_y} 0" rpy="${pi/2} 0 0" /> <!-- Смещение и ориентация -->
+        <axis xyz="0 0 -1"/> <!-- Ось вращения колеса -->
+    </joint>
+
+    <!-- Описание заднего левого колеса -->
+    <link name="back_left_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/> <!-- Геометрия колеса в форме цилиндра -->
+            </geometry>
+            <material name="blue"/> <!-- Материал для визуализации -->
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/> <!-- Геометрия столкновений, сфера -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Центр масс колеса -->
+            <mass value="${wheel_mass}" /> <!-- Масса колеса -->
+            <inertia ixx="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" ixy="0.0" ixz="0.0"
+                     iyy="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" iyz="0.0"
+                     izz="${(1/2) * wheel_mass * (wheel_radius*wheel_radius)}" /> <!-- Моменты инерции -->
+        </inertial>
+    </link>
+
+    <!-- Настройки для визуализации заднего левого колеса в Gazebo -->
+    <gazebo reference="back_left_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+
+    <!-- Описание соединения для заднего правого колеса -->
+    <joint name="back_right_wheel_joint" type="continuous">
+        <parent link="base_link"/> <!-- Родительское звено -->
+        <child link="back_right_wheel"/> <!-- Дочернее звено -->
+        <origin xyz="${back_wheel_offset_x} ${-wheel_offset_y} 0" rpy="${pi/2} 0 0" /> <!-- Смещение и ориентация -->
+        <axis xyz="0 0 -1"/> <!-- Ось вращения колеса -->
+    </joint>
+
+    <!-- Описание заднего правого колеса -->
+    <link name="back_right_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/> <!-- Геометрия колеса в форме цилиндра -->
+            </geometry>
+            <material name="blue"/> <!-- Материал для визуализации -->
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/> <!-- Геометрия столкновений, сфера -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Центр масс колеса -->
+            <mass value="${wheel_mass}" /> <!-- Масса колеса -->
+            <inertia ixx="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" ixy="0.0" ixz="0.0"
+                     iyy="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_thickness*wheel_thickness)}" iyz="0.0"
+                     izz="${(1/2) * wheel_mass * (wheel_radius*wheel_radius)}" /> <!-- Моменты инерции -->
+        </inertial>
+    </link>
+
+    <!-- Настройки для визуализации заднего правого колеса в Gazebo -->
+    <gazebo reference="back_right_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+
+</robot>
