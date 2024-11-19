@@ -2,8 +2,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="imu">
 
     <xacro:property name="offset_x" value="0" />
-    <xacro:property name="offset_y" value="0" />
-    <xacro:property name="offset_z" value="0.28" />
+    <xacro:property name="offset_y" value="0.045" />
+    <xacro:property name="offset_z" value="0.2" />
 
     <joint name="imu_sensor_joint" type="fixed">
         <origin xyz="0.11 0.05 0.05" rpy="0 0 0"/>
@@ -13,14 +13,14 @@
      
     <link name="imu_sensor_link">
         <inertial>
-        <origin xyz="${offset_x} ${offset_y} ${offset_z}" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="0.02" />
         <inertia ixx="${(1/12) * 0.01 * (0.2*0.2+0.5*0.5)}" ixy="0.0" ixz="0.0"
                  iyy="${(1/12) * 0.01 * (0.2*0.2+0.5*0.5)}" iyz="0.0"
                  izz="${(1/12) * 0.01 * (0.2*0.2+0.5*0.5)}" />
     </inertial>
     <visual>
-        <origin xyz="0 0 0"/>
+        <origin xyz="${offset_x} ${offset_y} ${offset_z}"/>
         <geometry>
             <box size="0.02 0.05 0.05"/>
         </geometry>
