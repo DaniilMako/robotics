@@ -27,11 +27,11 @@ $ LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
 $ ros2 run robot cycle
 ```
 ## задание 5
->терминал 1:
+терминал 1:
 ```
 $ LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
 ```
->терминал 2:
+терминал 2:
 ```
 $ ros2 run robot move
 ```
