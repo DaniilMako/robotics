@@ -1,0 +1,86 @@
+===========================ПОДСКАЗКА=========================================
+colcon build --packages-select urdf_tutorial robot_description robot_bringup robot_app robot stopping && source install/setup.bash
+
+>>>>запуск моей коробки на 4х колесах:
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
+
+
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup robot_lidar.launch.py
+===========================ПОДСКАЗКА=========================================
+
+
+===========================МОДУЛЬ 5=========================================
+задание 2:
+
+colcon build --packages-select robot_description robot_bringup robot_app && source install/setup.bash
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
+
+________________задание 3:__________________________________________________
+
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive_lab5_ex03.launch.py
+
+rviz:
+
+rqt_robot_steering: robot/cmd_vel
+
+Gazebo:
+search: teleop
+model/robot/cmd_vel
+
+
+________________задание 4:__________________________________________________
+
+colcon build --packages-select robot_description robot_bringup robot_app robot && source install/setup.bash
+
+>>>>терминал 1:
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
+
+>>>>терминал 2:
+ros2 run robot cycle
+ros2 run robot move
+
+
+________________задание 5:__________________________________________________
+
+придумать норм робота (пока идей и времени нет)
+
+
+
+
+===========================МОДУЛЬ 6=========================================
+
+colcon build --packages-select robot_description robot_bringup robot_app robot stopping && source install/setup.bash
+________________задание 1:__________________________________________________
+
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup robot_lidar.launch.py
+
+
+________________задание 2:__________________________________________________
+
+
+________________задание 3:__________________________________________________
+
+sudo apt install ros-humble-rviz-imu-plugin
+
+ros2 launch robot_bringup robot_lidar.launch.py
+
+
+ros2 run rqt_robot_steering rqt_robot_steering --ros-args -r /cmd_vel:="/robot/cmd_vel"
+
+
+ros2 topic list
+ros2 topic info /robot/scan
+ros2 topic info /depth/camera_info
+
+
+________________задание 4:__________________________________________________
+
+colcon build --packages-select robot_description robot_bringup robot_app robot stopping && source install/setup.bash
+
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_lidar robot_lidar.launch.py
+
+________________задание 5:__________________________________________________
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_depth robot_depth.launch.py
+
+
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch stopping move_lidar.launch.py
