@@ -17,8 +17,9 @@ Gazebo:
 
 ## задание 4
 >терминал 1:
-$ LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
-
+```
+LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup diff_drive.launch.py
+```
 >>>>терминал 2:
 ros2 run robot cycle
 
