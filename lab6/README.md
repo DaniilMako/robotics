@@ -9,8 +9,8 @@ $ LIBGL_ALWAYS_SOFTWARE=1 ros2 launch robot_bringup robot_lidar.launch.py
 ```
 
 - Gazebo:
-    - search: teleop  
-    - model/robot/cmd_vel
+    1. search: teleop  
+    2. model/robot/cmd_vel
 
 ```
 $ ros2 topic echo /imu
